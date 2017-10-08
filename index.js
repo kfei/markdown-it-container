@@ -119,6 +119,15 @@ module.exports = function container_plugin(md, name, options) {
     token        = state.push('container_' + name + '_open', 'div', 1);
     token.markup = markup;
     token.block  = true;
+
+    // Add an `url` attribute to the token
+    var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    var snippet = state.src.slice(state.bMarks[startLine], state.eMarks[startLine + 1])
+    var url = (snippet.match(urlRegex) || []).length ? snippet.match(urlRegex)[0] : ''
+    if (url) {
+      token.attrPush(['url', url])
+    }
+
     token.info   = params;
     token.map    = [ startLine, nextLine ];
 
